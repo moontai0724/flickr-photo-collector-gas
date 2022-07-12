@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name         SITCON X 蒙太奇照片牆 Flickr Photo Collector
 // @namespace    https://moontai0724.tw/
-// @version      1.0
+// @version      1.1.0
 // @description  協助 SITCON X 各年份照片挑選的工作！蒙太奇照片牆就靠你
 // @author       moontai0724
 // @match        https://www.flickr.com/photos/*
@@ -68,7 +68,7 @@
       console.info("SITCON X Photo Collector: Sending data: ", data);
       GM_xmlhttpRequest({
         method: "POST",
-        url: "https://script.google.com/macros/s/AKfycbyrrRSZuTTjun9bzF3NNABv3btOJB8DawjJUcO7YLUUL8XdK81_N04kSbpzL7zZ-G6OFQ/exec",
+        url: "https://script.google.com/macros/s/AKfycbyFLpD8Jlv_UTgs0caVw8zSkDIhk0esYP_XrXMoZnyiHrOr1AsXGXE_480nyzoEDPf6ow/exec",
         headers: {
           "Content-Type": "text/plain;charset=utf-8",
         },
