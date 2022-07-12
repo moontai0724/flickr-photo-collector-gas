@@ -2,7 +2,7 @@
 // ==UserScript==
 // @name         SITCON X 蒙太奇照片牆 Flickr Photo Collector
 // @namespace    https://moontai0724.tw/
-// @version      1.1.0
+// @version      1.1.1
 // @description  協助 SITCON X 各年份照片挑選的工作！蒙太奇照片牆就靠你
 // @author       moontai0724
 // @match        https://www.flickr.com/photos/*
@@ -16,19 +16,37 @@
 
 (function () {
   "use strict";
-  let collector = GM_getValue("collector", null);
-  if (!collector) {
-    collector = window.prompt(
-      "[SITCON X Photo Collector] 請輸入你的名字以利回報後的後續整理：",
-    );
-    if (!collector) collector = "使用者不想給名字 QQ";
-    GM_setValue("collector", collector);
+
+  let url;
+  setInterval(() => {
+    if (location.href !== url) {
+      url = location.href;
+      init();
+    }
+  }, 1000);
+
+  function init() {
+    const isMatch = /\/photos\/sitcon\/\d+/.test(location.href);
+    if (!isMatch) return;
+
+    if (document.getElementById("collect-to-sitcon-x-db")) return;
+    const button = document.createElement("button");
+    button.id = "collect-to-sitcon-x-db";
+    button.innerText = "收藏到 SITCON X 照片庫";
+    button.addEventListener("click", collect);
+    document.querySelector(".title-desc-block").after(button);
   }
 
-  const button = document.createElement("button");
-  button.id = "collect-to-sitcon-x-db";
-  button.innerText = "收藏到 SITCON X 照片庫";
-  button.addEventListener("click", () => {
+  function collect() {
+    let collector = GM_getValue("collector", null);
+    if (!collector) {
+      collector = window.prompt(
+        "[SITCON X Photo Collector] 請輸入你的名字以利回報後的後續整理：",
+      );
+      if (!collector) collector = "使用者不想給名字 QQ";
+      GM_setValue("collector", collector);
+    }
+
     document.getElementById("collect-to-sitcon-x-db").disabled = true;
     const photoId = /\/sitcon\/(\d+)\//.exec(location.href)[1];
     const url = location.href;
@@ -56,8 +74,7 @@
     })
       .then(value => window.alert(`成功！大感謝 >< (${value.message})`))
       .catch(() => window.alert("壞掉了... QQ 幫我截圖 console 回報一下 QQ"));
-  });
-  document.querySelector(".title-desc-block").after(button);
+  }
 
   /**
    * Fetch accounts from Bahamut server.
