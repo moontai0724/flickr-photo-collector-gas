@@ -1,6 +1,6 @@
 {
   "name": "flickr-photo-collector-gas",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A GAS to collect photos into a spreadsheet",
   "private": true,
   "license": "MIT",

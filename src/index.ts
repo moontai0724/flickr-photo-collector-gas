@@ -30,6 +30,10 @@ global.test = function (): void {
         id: "72157694606743870",
         title: "SITCON camp 同學會",
       },
+      {
+        id: "72177720300070232",
+        title: "2022 SITCON x OSCVPass Workshop",
+      },
     ],
     dateTaken: "2018-08-18",
     url: "https://www.flickr.com/photos/sitcon/44113652012/in/album-72157694606743870/",
@@ -40,8 +44,17 @@ global.test = function (): void {
   } as GoogleAppsScript.Events.DoPost);
 };
 
-global.doGet = function (): void {
-  return;
+global.doGet = function (): GoogleAppsScript.Content.TextOutput {
+  const database = new DataManager();
+  const result = database.getAll();
+
+  Logger.log("Responsed: %s", result);
+  return ContentService.createTextOutput(
+    JSON.stringify({
+      success: true,
+      data: result,
+    }),
+  ).setMimeType(ContentService.MimeType.JSON);
 };
 
 global.doPost = function (

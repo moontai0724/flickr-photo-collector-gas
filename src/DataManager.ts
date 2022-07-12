@@ -6,6 +6,43 @@ export default class DataManager {
     ) as GoogleAppsScript.Spreadsheet.Sheet;
   }
 
+  public getAll(): RowOfRecommendation[] {
+    const rowsValue = this.sheet
+      .getRange(2, 1, this.sheet.getLastRow() - 1, 7)
+      .getDisplayValues();
+
+    const result: RowOfRecommendation[] = rowsValue.map((rowValue, index) => {
+      const referrer = rowValue[0];
+      const photoId = rowValue[1];
+      const url =
+        this.sheet
+          .getRange(index + 2, 2)
+          .getRichTextValues()[0][0]
+          ?.getLinkUrl() ?? "";
+      const photoTitle = rowValue[2];
+      const originalPhotoUrl = rowValue[3];
+      const takenDate = rowValue[4];
+      const possibleYear = rowValue[5];
+      const albums = rowValue[6].split("\n").map(album => {
+        const [id, ...title] = album.split(":");
+        return { id, title: title.join(":") };
+      });
+
+      return {
+        referrer,
+        photoId,
+        photoTitle,
+        url,
+        originalPhotoUrl,
+        takenDate,
+        possibleYear,
+        albums,
+      };
+    });
+
+    return result;
+  }
+
   public isPhotoExists(photoId: string): boolean {
     const result = this.sheet
       .getRange(2, 2, this.sheet.getLastRow(), 1)
@@ -43,19 +80,12 @@ export default class DataManager {
     if (albums.length == 0) return;
 
     const albumRichText = SpreadsheetApp.newRichTextValue().setText(
-      albums.map(album => `${album.title}(${album.id})`).join("\n"),
+      albums.map(album => `${album.id}:${album.title}`).join("\n"),
     );
     let currentLength = 0;
     for (const album of albums) {
-      const title = `${album.title}(${album.id})`;
+      const title = `${album.id}:${album.title}`;
       const link = `https://www.flickr.com/photos/sitcon/albums/${album.id}`;
-      Logger.log(
-        "Set link from %s for length %s, text: %s,link: %s",
-        currentLength,
-        title.length,
-        title,
-        link,
-      );
       albumRichText.setLinkUrl(
         currentLength,
         currentLength + title.length,
